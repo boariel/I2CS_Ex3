@@ -10,6 +10,7 @@ my algorithm is a simple algorithm that is focused on three states:
 1. when close ghost is eadible.
 2. when close to a ghost.
 3. when not close to any ghosts.
+
 When in the first state the algorithm tries to eat the closest ghost.
 When in the second state the algorithm looks for the tiles furthest from as many ghosts as possible
 and goes there.
