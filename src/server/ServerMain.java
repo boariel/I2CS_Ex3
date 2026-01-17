@@ -6,7 +6,7 @@ package server;
  * Controls:
  * - SPACE: Start/Pause game
  * - h: Help
- * - w,a,x,d: Manual controls (if ManualAlgo is selected)
+ * - w,a,s,d: Manual controls (if ManualAlgo is selected)
  *
  * Configuration is done via ServerConfig.java
  */
@@ -57,7 +57,7 @@ public class ServerMain {
                 System.out.println("SPACE - Start/Pause game");
                 System.out.println("w - Move up (manual mode)");
                 System.out.println("a - Move left (manual mode)");
-                System.out.println("x - Move down (manual mode)");
+                System.out.println("s - Move down (manual mode)");
                 System.out.println("d - Move right (manual mode)");
                 System.out.println("h - This help message");
                 System.out.println("Configure game in ServerConfig.java");
