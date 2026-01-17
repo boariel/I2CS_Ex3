@@ -5,7 +5,7 @@ and also to design and develop the pacman game.
 In pacman you move through a 2d maze trying to collect all the orbs of the map to win.
 In the maze there are ghosts that if you bump into them you lose, but if you eat a green power-up orb
 you can eat the ghosts for a period of time to make them not dangerous for a certain amount of time
-##My pacman algorithm
+## My pacman algorithm
 my algorithm is a simple algorithm that is focused on three states:
 1. when close ghost is eadible.
 2. when close to a ghost.
