@@ -133,6 +133,24 @@ public class Map implements Map2D {
         int y = p.getY();
         this.map[y][x] = v;
     }
+    @Override
+    public boolean equals(Object o) {
+        if (o != null) {
+            if (o instanceof Map2D) {
+                Map2D m=(Map2D) o;
+                if (this.getWidth()==m.getWidth()&&this.getHeight()==m.getHeight()){
+                    for (int x = 0; x < this.getWidth(); x++) {
+                        for (int y = 0; y < this.getHeight(); y++) {
+                            if (this.getPixel(x, y) != ((Map2D)o).getPixel(x, y))
+                                return false;
+                        }
+                    }
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     /**
      * This function fill a new color in a group of pixels of the same color
      * starting from a given pixel xy.
