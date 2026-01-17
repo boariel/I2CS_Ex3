@@ -1,4 +1,5 @@
 import java.util.ArrayDeque;
+import java.util.Arrays;
 import java.util.LinkedList;
 
 /**
@@ -267,18 +268,63 @@ public class Map implements Map2D {
      */
     @Override
     public Map2D allDistance(Pixel2D start, int obsColor) {
+        Map2D ans = new Map(this.getWidth(), this.getHeight(), -1);
+
         boolean cyclic = this._cyclicFlag;
-        Map2D ans = null;  // the result.
-        ans = new Map(this.getWidth(),getHeight(),0);
-        for (int i = 0; i < this.getWidth(); i++) {
-            for (int j = 0; j < this.getHeight(); j++) {
-                Pixel2D[] path = this.shortestPath(start, new Index2D(i,j),obsColor);
-                int len = -1;
-                if (path!=null)
-                    len = path.length-1;
-                ans.setPixel(i,j,len);
+
+        int[][] dist = new int[getHeight()][getWidth()];
+        for (int y = 0; y < getHeight(); y++) {
+            Arrays.fill(dist[y], -1);
+        }
+
+        ArrayDeque<Pixel2D> q = new ArrayDeque<>();
+
+        // If start is an obstacle, return empty map
+        if (getPixel(start.getX(), start.getY()) == obsColor) {
+            return ans;
+        }
+
+        dist[start.getY()][start.getX()] = 0;
+        q.add(start);
+
+        int[] dx = {1, -1, 0, 0};
+        int[] dy = {0, 0, 1, -1};
+
+        while (!q.isEmpty()) {
+            Pixel2D v = q.poll();
+            int x = v.getX();
+            int y = v.getY();
+
+            for (int i = 0; i < 4; i++) {
+                int nx = x + dx[i];
+                int ny = y + dy[i];
+
+                if (cyclic) {
+                    nx = (nx + getWidth()) % getWidth();
+                    ny = (ny + getHeight()) % getHeight();
+                }
+
+                if (nx < 0 || nx >= getWidth() || ny < 0 || ny >= getHeight())
+                    continue;
+
+                if (getPixel(nx, ny) == obsColor)
+                    continue;
+
+                if (dist[ny][nx] != -1)
+                    continue;
+
+                dist[ny][nx] = dist[y][x] + 1;
+                q.add(new Index2D(nx, ny));
             }
         }
+
+        // Copy distances into Map2D
+        for (int x = 0; x < getWidth(); x++) {
+            for (int y = 0; y < getHeight(); y++) {
+                ans.setPixel(x, y, dist[y][x]);
+            }
+        }
+
         return ans;
     }
 }
