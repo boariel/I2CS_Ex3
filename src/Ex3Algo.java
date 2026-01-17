@@ -20,7 +20,10 @@ public class Ex3Algo implements PacManAlgo{
 	 *  Add a short description for the algorithm as a String.
 	 */
 	public String getInfo() {
-		return null;
+		return "This is an algorithm for beating the game pacman." +
+                "If pacman is close to a ghost and has enough power-up time he will move towards the closest ghost." +
+                "If he is close to a ghost he will go towards the places furthest away from as many ghosts as possible." +
+                "If there are no ghosts nearby pacman will move towards the closest pink orb.";
 	}
 	@Override
 	/**
