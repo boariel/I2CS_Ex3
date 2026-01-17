@@ -27,7 +27,7 @@ public class Ex3Main {
     }
     public static void play1() {
     	Game ex3 = new Game();//new Game(level);
-    	ex3.init(GameInfo.CASE_SCENARIO, GameInfo.MY_ID, GameInfo.CYCLIC_MODE, GameInfo.RANDOM_SEED, GameInfo.RESOLUTION_NORM, GameInfo.DT, -1);
+        System.out.println(ex3.init(GameInfo.CASE_SCENARIO, GameInfo.MY_ID, GameInfo.CYCLIC_MODE, GameInfo.RANDOM_SEED, GameInfo.RESOLUTION_NORM, GameInfo.DT, -1));
         PacManAlgo man = GameInfo.ALGO;
         while(ex3.getStatus()!=PacmanGame.DONE) {
             _cmd = ex3.getKeyChar();
