@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="I2CS_Ex3:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/I2CS_Ex3_jar</output-path>
+  <artifact type="jar" name="Ex3_3:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Ex3_3_jar</output-path>
     <root id="archive" name="I2CS_Ex3.jar">
       <element id="module-output" name="I2CS_Ex3" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/junit/jupiter/junit-jupiter/5.14.0/junit-jupiter-5.14.0.jar" path-in-jar="/" />
@@ -12,6 +12,7 @@
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/junit/jupiter/junit-jupiter-engine/5.14.0/junit-jupiter-engine-5.14.0.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/junit/platform/junit-platform-engine/1.14.0/junit-platform-engine-1.14.0.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/libs/Ex3_v09e.jar-out.jar" path-in-jar="/" />
+      <element id="library" level="project" name="src" />
     </root>
   </artifact>
 </component>
