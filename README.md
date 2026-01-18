@@ -34,7 +34,7 @@ the files for the algorithm found in src outside of the server folder.
 ## My pacman server-side implementation
 The src file includes a folder called 'server' in which resides my implementation of the server-side for pacman.
 My implementation uses the class 'StdDraw' to show a pacman game on screen including a menu for the the and the game itself.
-Here is a short video of me playing pacman through my implementatio:
+Here is a short video of me playing pacman through my implementation:
 https://drive.google.com/file/d/1G3u2T0amEfFofAQpEl1hpaR09AN9vUcC/view?usp=sharing
 
 ## Server-side files
