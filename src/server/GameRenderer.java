@@ -2,7 +2,7 @@ package server;
 import java.awt.Color;
 
 public class GameRenderer {
-    private static final int CELL_SIZE = 20;
+    private static final int CELL_SIZE = 18; // Smaller cells for larger maze
     private boolean initialized = false;
 
     public void draw(MyGame game) {

@@ -55,11 +55,18 @@ public class MyGame implements PacmanGame {
         pacmanPos = findStartPosition();
 
         // Create ghosts (more ghosts on higher levels)
-        int numGhosts = 3 + level;
+        // First ghost is always smart (GREEDY_SP), rest are random walkers
+        int numGhosts = level;
         ghosts = new MyGhost[numGhosts];
         for (int i = 0; i < numGhosts; i++) {
             Index2D ghostStart = findGhostStartPos(i);
-            ghosts[i] = new MyGhost(GhostCL.GREEDY_SP, ghostStart, seed + i);
+            if (i == 3) {
+                // Forth ghost is smart
+                ghosts[i] = new MyGhost(GhostCL.GREEDY_SP, ghostStart, seed + i);
+            } else {
+                // Other ghosts are random walkers
+                ghosts[i] = new MyGhost(GhostCL.RANDOM_WALK1, ghostStart, seed + i);
+            }
         }
 
         // Initialize renderer
@@ -72,238 +79,150 @@ public class MyGame implements PacmanGame {
     }
 
     private void loadLevel(int level) {
-        // Create different boards for different levels
-        switch(level) {
-            case 0:
-                board = createLevel0();
-                break;
-            case 1:
-                board = createLevel1();
-                break;
-            case 2:
-                board = createLevel2();
-                break;
-            case 3:
-                board = createLevel3();
-                break;
-            case 4:
-                board = createLevel4();
-                break;
-            default:
-                board = createLevel0();
-        }
+        // All levels use the same maze, only ghost count changes
+        board = createClassicMaze();
     }
 
-    private int[][] createLevel0() {
-        // Simple 10x10 level
-        int[][] level = new int[10][10];
+    private int[][] createClassicMaze() {
+        // Classic Pac-Man style maze - 28x31 (standard size)
+        int width = 28;
+        int height = 31;
+        int[][] maze = new int[width][height];
 
-        // Fill with walls on borders
-        for (int x = 0; x < 10; x++) {
-            for (int y = 0; y < 10; y++) {
-                if (x == 0 || x == 9 || y == 0 || y == 9) {
-                    level[x][y] = blueColor; // walls
-                } else {
-                    level[x][y] = pinkColor; // dots
-                }
+        // Initialize all as walls
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                maze[x][y] = blueColor;
             }
         }
 
-        // Add some internal walls
-        level[2][2] = blueColor;
-        level[2][3] = blueColor;
-        level[7][2] = blueColor;
-        level[7][3] = blueColor;
-        level[2][7] = blueColor;
-        level[2][6] = blueColor;
-        level[7][7] = blueColor;
-        level[7][6] = blueColor;
+        // Create the classic maze pattern
+        // Outer corridor
+        fillRect(maze, 1, 1, 26, 29, pinkColor);
+
+        // Top section walls
+        fillRect(maze, 2, 2, 5, 4, blueColor);
+        fillRect(maze, 8, 2, 11, 4, blueColor);
+        fillRect(maze, 16, 2, 19, 4, blueColor);
+        fillRect(maze, 21, 2, 25, 4, blueColor);
+
+        // Second row blocks
+        fillRect(maze, 2, 6, 5, 7, blueColor);
+        fillRect(maze, 8, 6, 11, 10, blueColor);
+        fillRect(maze, 16, 6, 19, 10, blueColor);
+        fillRect(maze, 21, 6, 25, 7, blueColor);
+
+        // Third row
+        fillRect(maze, 2, 9, 5, 10, blueColor);
+        fillRect(maze, 21, 9, 25, 10, blueColor);
+
+        // Ghost house area (center)
+        fillRect(maze, 10, 12, 17, 16, blackColor); // Ghost house
+        fillRect(maze, 9, 13, 9, 15, blueColor); // Left wall
+        fillRect(maze, 18, 13, 18, 15, blueColor); // Right wall
+        fillRect(maze, 10, 12, 17, 12, blueColor); // Top wall
+
+        // Middle section walls
+        fillRect(maze, 2, 12, 7, 13, blueColor);
+        fillRect(maze, 20, 12, 25, 13, blueColor);
+
+        fillRect(maze, 2, 15, 7, 19, blueColor);
+        fillRect(maze, 20, 15, 25, 19, blueColor);
+
+        // Bottom section
+        fillRect(maze, 2, 21, 5, 22, blueColor);
+        fillRect(maze, 8, 18, 11, 22, blueColor);
+        fillRect(maze, 16, 18, 19, 22, blueColor);
+        fillRect(maze, 21, 21, 25, 22, blueColor);
+
+        // Bottom blocks
+        fillRect(maze, 2, 24, 5, 25, blueColor);
+        fillRect(maze, 8, 24, 19, 25, blueColor);
+        fillRect(maze, 21, 24, 25, 25, blueColor);
+
+        // Final bottom section
+        fillRect(maze, 8, 27, 11, 28, blueColor);
+        fillRect(maze, 16, 27, 19, 28, blueColor);
+
+        // Cyclic walls
+        fillRect(maze,0,13,0,15,blackColor);
+        fillRect(maze,27,13,27,15,blackColor);
+
+        fillRect(maze,0,1,0,3,blackColor);
+        fillRect(maze,0,27,0,29,blackColor);
+        fillRect(maze,27,1,27,3,blackColor);
+        fillRect(maze,27,27,27,29,blackColor);
 
         // Add power pellets in corners
-        level[1][1] = greenColor;
-        level[1][8] = greenColor;
-        level[8][1] = greenColor;
-        level[8][8] = greenColor;
+        maze[1][1] = greenColor;
+        maze[26][1] = greenColor;
+        maze[1][29] = greenColor;
+        maze[26][29] = greenColor;
 
-        // Clear starting positions
-        level[5][5] = blackColor; // Pac-Man start
-        level[1][1] = greenColor;
+        // Add extra power pellets
+        maze[1][15] = greenColor;
+        maze[26][15] = greenColor;
 
-        return level;
+        return maze;
     }
 
-    private int[][] createLevel1() {
-        // Medium 15x15 level
-        int[][] level = new int[15][15];
-
-        for (int x = 0; x < 15; x++) {
-            for (int y = 0; y < 15; y++) {
-                if (x == 0 || x == 14 || y == 0 || y == 14) {
-                    level[x][y] = blueColor;
-                } else {
-                    level[x][y] = pinkColor;
-                }
+    // Helper method to fill a rectangle
+    private void fillRect(int[][] maze, int x1, int y1, int x2, int y2, int color) {
+        for (int x = x1; x <= x2 && x < maze.length; x++) {
+            for (int y = y1; y <= y2 && y < maze[0].length; y++) {
+                maze[x][y] = color;
             }
         }
-
-        // Create a cross pattern of walls
-        for (int i = 4; i < 11; i++) {
-            level[7][i] = blueColor;
-            level[i][7] = blueColor;
-        }
-
-        // Power pellets
-        level[2][2] = greenColor;
-        level[2][12] = greenColor;
-        level[12][2] = greenColor;
-        level[12][12] = greenColor;
-
-        // Clear center
-        level[7][7] = blackColor;
-
-        return level;
-    }
-
-    private int[][] createLevel2() {
-        // Larger 20x20 level
-        int[][] level = new int[20][20];
-
-        for (int x = 0; x < 20; x++) {
-            for (int y = 0; y < 20; y++) {
-                if (x == 0 || x == 19 || y == 0 || y == 19) {
-                    level[x][y] = blueColor;
-                } else {
-                    level[x][y] = pinkColor;
-                }
-            }
-        }
-
-        // Create maze-like walls
-        for (int i = 2; i < 18; i += 3) {
-            for (int j = 2; j < 10; j++) {
-                level[i][j] = blueColor;
-            }
-        }
-
-        // Power pellets
-        level[3][3] = greenColor;
-        level[3][16] = greenColor;
-        level[16][3] = greenColor;
-        level[16][16] = greenColor;
-
-        level[10][10] = blackColor;
-
-        return level;
-    }
-
-    private int[][] createLevel3() {
-        // Complex 25x25 level
-        int[][] level = new int[25][25];
-
-        for (int x = 0; x < 25; x++) {
-            for (int y = 0; y < 25; y++) {
-                if (x == 0 || x == 24 || y == 0 || y == 24) {
-                    level[x][y] = blueColor;
-                } else {
-                    level[x][y] = pinkColor;
-                }
-            }
-        }
-
-        // Create complex maze
-        for (int i = 5; i < 20; i += 5) {
-            for (int j = 5; j < 20; j++) {
-                if (j % 2 == 0) {
-                    level[i][j] = blueColor;
-                }
-            }
-        }
-
-        // Power pellets in corners
-        level[2][2] = greenColor;
-        level[2][22] = greenColor;
-        level[22][2] = greenColor;
-        level[22][22] = greenColor;
-        level[12][12] = greenColor; // Extra in center
-
-        level[12][12] = blackColor;
-
-        return level;
-    }
-
-    private int[][] createLevel4() {
-        // Expert 30x30 level
-        int[][] level = new int[30][30];
-
-        for (int x = 0; x < 30; x++) {
-            for (int y = 0; y < 30; y++) {
-                if (x == 0 || x == 29 || y == 0 || y == 29) {
-                    level[x][y] = blueColor;
-                } else {
-                    level[x][y] = pinkColor;
-                }
-            }
-        }
-
-        // Create dense maze
-        for (int i = 3; i < 27; i += 4) {
-            for (int j = 3; j < 27; j++) {
-                if ((i + j) % 3 != 0) {
-                    level[i][j] = blueColor;
-                }
-            }
-        }
-
-        // Many power pellets for difficult level
-        level[2][2] = greenColor;
-        level[2][27] = greenColor;
-        level[27][2] = greenColor;
-        level[27][27] = greenColor;
-        level[15][2] = greenColor;
-        level[15][27] = greenColor;
-        level[2][15] = greenColor;
-        level[27][15] = greenColor;
-
-        level[15][15] = blackColor;
-
-        return level;
     }
 
     private Index2D findStartPosition() {
-        // Find black (empty) cell or center of board
-        for (int x = 0; x < board.length; x++) {
+        // Pac-Man starts at bottom center of maze
+        int startX = board.length / 2;
+        int startY = board[0].length - 5;
+
+        // Make sure it's not a wall
+        if (board[startX][startY] == blueColor) {
+            // Find nearest non-wall position
             for (int y = 0; y < board[0].length; y++) {
-                if (board[x][y] == blackColor) {
+                if (board[startX][y] != blueColor) {
+                    return new Index2D(startX, y);
+                }
+            }
+        }
+
+        // Clear the starting position
+        board[startX][startY] = blackColor;
+        return new Index2D(startX, startY);
+    }
+
+    private Index2D findGhostStartPos(int ghostIndex) {
+        // Ghosts start in the center "ghost house"
+        int centerX = board.length / 2;
+        int centerY = board[0].length / 2;
+
+        // Offset positions for multiple ghosts
+        int[][] offsets = {
+                {0, 0},   // Center
+                {-1, 0},  // Left
+                {1, 0},   // Right
+                {0, -1},  // Down
+                {0, 1}    // Up
+        };
+
+        if (ghostIndex < offsets.length) {
+            int x = centerX + offsets[ghostIndex][0];
+            int y = centerY + offsets[ghostIndex][1];
+
+            // Make sure it's not a wall
+            if (x >= 0 && x < board.length && y >= 0 && y < board[0].length) {
+                if (board[x][y] != blueColor) {
                     return new Index2D(x, y);
                 }
             }
         }
+
         // Default to center
-        return new Index2D(board.length / 2, board[0].length / 2);
-    }
-
-    private Index2D findGhostStartPos(int ghostIndex) {
-        // Place ghosts in different corners
-        int w = board.length;
-        int h = board[0].length;
-
-        Index2D[] positions = {
-                new Index2D(1, 1),
-                new Index2D(w - 2, 1),
-                new Index2D(1, h - 2),
-                new Index2D(w - 2, h - 2),
-                new Index2D(w / 2, 1),
-                new Index2D(w / 2, h - 2),
-                new Index2D(1, h / 2),
-                new Index2D(w - 2, h / 2)
-        };
-
-        if (ghostIndex < positions.length) {
-            return positions[ghostIndex];
-        }
-
-        // Random position for extra ghosts
-        return new Index2D((ghostIndex % (w - 2)) + 1, (ghostIndex / (w - 2)) + 1);
+        return new Index2D(centerX, centerY);
     }
 
     @Override
@@ -369,8 +288,8 @@ public class MyGame implements PacmanGame {
         int newY = current.getY();
 
         switch(direction) {
-            case UP: newY--; break;
-            case DOWN: newY++; break;
+            case UP: newY++; break;      // Flipped: UP increases Y
+            case DOWN: newY--; break;    // Flipped: DOWN decreases Y
             case LEFT: newX--; break;
             case RIGHT: newX++; break;
             case STAY: break;

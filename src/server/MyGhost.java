@@ -164,8 +164,8 @@ public class MyGhost implements GhostCL {
         int newY = current.getY();
 
         switch(direction) {
-            case PacmanGame.UP: newY--; break;
-            case PacmanGame.DOWN: newY++; break;
+            case PacmanGame.UP: newY++; break;      // Flipped: UP increases Y
+            case PacmanGame.DOWN: newY--; break;    // Flipped: DOWN decreases Y
             case PacmanGame.LEFT: newX--; break;
             case PacmanGame.RIGHT: newX++; break;
         }

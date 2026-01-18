@@ -1,12 +1,14 @@
 package server;
 
+import java.awt.*;
+
 /**
  * Main class for running your custom Pac-Man game server.
  *
  * Controls:
  * - SPACE: Start/Pause game
  * - h: Help
- * - w,a,s,d: Manual controls (if ManualAlgo is selected)
+ * - w,a,x,d: Manual controls (if ManualAlgo is selected)
  *
  * Configuration is done via ServerConfig.java
  */
@@ -14,7 +16,25 @@ public class ServerMain {
     private static Character _cmd;
 
     public static void main(String[] args) {
-        playGame();
+        // Main loop - keep showing menu after each game
+        boolean keepPlaying = true;
+
+        while (keepPlaying) {
+            // Show menu first
+            MenuScreen menu = new MenuScreen();
+            MenuScreen.MenuState result = menu.show();
+
+            if (result == MenuScreen.MenuState.PLAY) {
+                // Start the game
+                playGame();
+            } else {
+                // Exit if menu was closed
+                keepPlaying = false;
+            }
+        }
+
+        System.out.println("Thanks for playing!");
+        System.exit(0);
     }
 
     public static void playGame() {
@@ -79,9 +99,67 @@ public class ServerMain {
         }
 
         // Game over
-        System.out.println(game.end(-1));
+        String finalResult = game.end(-1);
         System.out.println("=== GAME FINISHED ===");
-        System.out.println("Thanks for playing!");
+
+        // Pass game stats to game over screen
+        boolean won = game.getLives() > 0;
+        int finalScore = game.getScore();
+        showGameOverScreen(won, finalScore);
+    }
+
+    /**
+     * Show game over screen and ask if player wants to continue.
+     * Returns true to return to menu, false to exit.
+     */
+    private static boolean showGameOverScreen(boolean won, int score) {
+        // Give a moment to see the final game state
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // Reset canvas to menu size
+        StdDraw.setCanvasSize(600, 500);
+        StdDraw.setXscale(0, 600);
+        StdDraw.setYscale(0, 500);
+
+        StdDraw.clear(Color.BLACK);
+
+        // Game Over title
+        if (won) {
+            StdDraw.setPenColor(Color.GREEN);
+            StdDraw.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 50));
+            StdDraw.text(300, 350, "YOU WIN!");
+        } else {
+            StdDraw.setPenColor(Color.RED);
+            StdDraw.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 50));
+            StdDraw.text(300, 350, "GAME OVER");
+        }
+
+        // Show final score
+        StdDraw.setPenColor(Color.YELLOW);
+        StdDraw.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 30));
+        StdDraw.text(300, 280, "Final Score: " + score);
+
+        // Instructions
+        StdDraw.setPenColor(Color.WHITE);
+        StdDraw.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 20));
+        StdDraw.text(300, 210, "Press M to return to Menu");
+
+        StdDraw.show();
+
+        // Wait for user input
+        while (true) {
+            if (StdDraw.hasNextKeyTyped()) {
+                char key = StdDraw.nextKeyTyped();
+                if (key == 'm' || key == 'M') {
+                    return true; // Return to menu
+                }
+            }
+            StdDraw.pause(10);
+        }
     }
 
     /**

@@ -1,6 +1,9 @@
 package server;
 
-public class ManualAlgo implements PacManAlgo{
+/**
+ * Manual control algorithm - allows player to control Pac-Man with keyboard.
+ */
+public class ManualAlgo implements PacManAlgo {
 
     @Override
     public String getInfo() {
