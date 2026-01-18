@@ -56,3 +56,7 @@ My implementation uses the class 'StdDraw' to show a pacman game on screen inclu
 | `Map.java` | An instance class of Map2D interface. |
 | `StdDraw.java` | A class used to help display the GUI. |
 
+## Executables 
+This repository also includes 'Ex3_2','Ex3_3' which have exacutable jar files so you can run the algorithm ('Ex3_2')
+or my implementation of the game ('Ex3_3') without puting all the files in a development environment.
+The jar files can be found in the release.
